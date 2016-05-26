@@ -10,10 +10,7 @@ return [
             'cookieValidationKey' => '',
         ],
         'view' => [
-            'class' => '\rmrevin\yii\minify\View',
-            'minify_path' => '@webroot/assets',
-            'js_position' => [\yii\web\View::POS_END],
-            'force_charset' => 'UTF-8',
+            'enableMinify' => false,
         ],
     ],
     'modules' => [

@@ -9,7 +9,7 @@ return [
             'cookieValidationKey' => '',
         ],
         'view' => [
-            'enableMinify' => false,
+            'enableMinify' => true,
         ],
     ],
 ];
