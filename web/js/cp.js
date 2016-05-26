@@ -29,12 +29,7 @@ function connect() {
             $loaderStatusMore.html('Соединение с сервером потеряно');
 
             $content.fadeOut(function () {
-                $loader.fadeIn(function () {
-                    $loaderSpinner.fadeOut(function () {
-                        $loaderStatus.fadeIn();
-                        $loaderStatusMore.fadeIn();
-                    })
-                });
+                $loader.fadeIn();
             });
         } else {
             $loaderStatus.html('Ошибка подключения');
@@ -48,12 +43,7 @@ function connect() {
 
         if (connection_opened) {
             $content.fadeOut(function () {
-                $loader.fadeIn(function () {
-                    $loaderSpinner.fadeOut(function () {
-                        $loaderStatus.fadeIn();
-                        $loaderStatusMore.fadeIn();
-                    })
-                });
+                $loader.fadeIn();
             });
         }
     };

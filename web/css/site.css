@@ -1,44 +1,6 @@
 body {
     padding-top: 70px;
 }
-/* Card component */
-.card {
-    position: relative;
-    display: block;
-    background: #fff;
-    border: 0;
-    border-radius: 0;
-    overflow: hidden;
-    margin-bottom: .75rem;
-}
-
-.card-raised {
-    box-shadow: 0 0 20px 0 rgba(0,0,0,.5);
-}
-
-.card-body {
-    padding: 20px;
-}
-
-.card-login {
-    margin-top: 2vh;
-}
-
-.card-title {
-    background: #450093;
-    height: 150px;
-    margin: 0;
-}
-
-.card-title h1 {
-    margin: 0;
-    padding: 0;
-    line-height: 150px;
-    text-align: center;
-    font-size: 40px;
-    color: #fff;
-}
-/* End Card component */
 
 .navbar-header a.navbar-brand {
     color: #fff;
