@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="user-index">
 
     <h1 class="page-header">
-        <?= Html::encode($this->title) ?>
+        <?= $this->title ?>
         <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
     </h1>
 
@@ -24,7 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'username',
             'email:email',
-            'status',
             [
                 'attribute' => 'status',
                 'value' => function ($model) {
@@ -35,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'created_at:datetime',
             'updated_at:datetime',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'app\components\ActionButtonGroupColumn'],
         ],
     ]); ?>
 </div>

@@ -6,6 +6,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
@@ -37,24 +38,27 @@ AppAsset::register($this);
     ]);
 
     $items = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Панель Управления', 'url' => ['/control-panel/index']],
+        ['label' => 'Пользователи', 'url' => ['/user/index']],
+        ['label' => 'Логи', 'url' => ['/log/index']],
+        [
+            'label' => Yii::$app->user->identity->username,
+            'items' => [
+                [
+                    'label' => 'Выйти',
+                    'url' => ['/site/logout'],
+                    'linkOptions' => ['data-method' => 'post'],
+                ],
+            ],
+        ],
     ];
-
-    if (Yii::$app->user->isGuest) {
-        $items[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $items[] = [
-            'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-            'url' => ['/site/logout'],
-            'linkOptions' => ['data-method' => 'post']
-        ];
-    }
 
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'encodeLabels' => false,
-        'items' => $items
+        'items' => $items,
     ]);
+
     NavBar::end();
     ?>
 
@@ -65,14 +69,6 @@ AppAsset::register($this);
         <?= $content ?>
     </div>
 </div>
-
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; <?= Yii::$app->name ?> <?= date('Y') ?></p>
-
-        <p class="pull-right">By <a href="//solomaha.pp.ua">Alex Solomaha</a></p>
-    </div>
-</footer>
 
 <?php $this->endBody() ?>
 </body>

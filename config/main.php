@@ -4,7 +4,7 @@ $params = require(__DIR__ . '/params.php');
 
 return [
     'id' => 'basic',
-    'name' => 'PROJECTNAME',
+    'name' => 'SmartHome',
     'language' => 'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -37,12 +37,13 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '' => 'site/index',
+                '' => 'control-panel/index',
                 'login' => 'site/login',
             ],
         ],
         'view' => [
             'class' => '\rmrevin\yii\minify\View',
+            'enableMinify' => false,
             'minify_path' => '@webroot/assets',
             'js_position' => [\yii\web\View::POS_END],
             'force_charset' => 'UTF-8',
@@ -51,6 +52,14 @@ return [
             'dateFormat' => 'dd.MM.yyyy',
             'datetimeFormat' => 'php:d.m.Y H:i',
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapAsset' => [
+                    'css' => [],
+                ],
+            ],
+        ],
     ],
     'params' => $params,
+    'defaultRoute' => ['control-panel/index'],
 ];

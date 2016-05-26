@@ -1,7 +1,7 @@
 body {
-    padding-top: 70px;
+    background: #2A2D33;
 }
-/* Card component */
+
 .card {
     position: relative;
     display: block;
@@ -38,12 +38,12 @@ body {
     font-size: 40px;
     color: #fff;
 }
-/* End Card component */
 
-.navbar-header a.navbar-brand {
+.credentials {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
     color: #fff;
-}
-
-.navbar-inverse .navbar-nav>li>a {
-    color: #fff;
+    opacity: 0.8;
 }

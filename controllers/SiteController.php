@@ -59,7 +59,7 @@ class SiteController extends Controller
             return $this->goBack();
         }
 
-        return $this->render('login', [
+        return $this->renderPartial('login', [
             'model' => $model,
         ]);
     }

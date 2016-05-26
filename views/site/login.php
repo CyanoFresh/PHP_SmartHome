@@ -4,42 +4,60 @@
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model app\models\LoginForm */
 
-use yii\helpers\Html;
+use app\assets\LoginAsset;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
+LoginAsset::register($this);
 ?>
-<div class="site-login">
-    <h1 class="page-header">
-        <?= $this->title ?>
-    </h1>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="robots" content="noindex">
+    <?= Html::csrfMetaTags() ?>
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'login-form',
-        'options' => ['class' => 'form-horizontal'],
-        'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            'labelOptions' => ['class' => 'col-lg-1 control-label'],
-        ],
-    ]); ?>
+    <title>Авторизация - <?= Yii::$app->name ?></title>
 
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+    <?php $this->head() ?>
+</head>
 
-        <?= $form->field($model, 'password')->passwordInput() ?>
+<body>
 
-        <?= $form->field($model, 'rememberMe')->checkbox([
-            'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-        ]) ?>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="card card-raised card-login">
+                <div class="card-title">
+                    <h1>SmartHome</h1>
+                </div>
+                <div class="card-body">
+                    <?php $form = ActiveForm::begin(); ?>
 
-        <div class="form-group">
-            <div class="col-lg-offset-1 col-lg-11">
-                <?= Html::submitButton('Login', [
-                    'class' => 'btn btn-primary',
-                    'name' => 'login-button'
-                ]) ?>
+                    <?= $form->field($model, 'username')->textInput() ?>
+
+                    <?= $form->field($model, 'password')->passwordInput() ?>
+
+                    <?= $form->field($model, 'rememberMe')->checkbox() ?>
+
+                    <?= Html::submitButton('Войти', [
+                        'class' => 'btn btn-primary btn-block',
+                    ]) ?>
+                    <?php ActiveForm::end(); ?>
+                </div>
             </div>
         </div>
-
-    <?php ActiveForm::end(); ?>
+    </div>
 </div>
+
+<div class="credentials">
+    By <a href="//solomaha.com">Alex Solomaha</a>
+</div>
+
+<?php $this->endBody() ?>
+</body>
+</html>
+<?php $this->endPage() ?>

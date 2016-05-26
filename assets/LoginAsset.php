@@ -4,20 +4,19 @@ namespace app\assets;
 
 use yii\web\AssetBundle;
 
-class AppAsset extends AssetBundle
+class LoginAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
         'css/bootstrap.min.css',
-        'css/site.css',
+        'css/login.css',
     ];
     public $js = [
-        'js/site.js',
+        'js/login.js',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
-        'app\assets\FontAwesomeAsset',
+        'yii\web\JqueryAsset',
     ];
 }
