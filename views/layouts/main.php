@@ -39,8 +39,14 @@ AppAsset::register($this);
 
     $items = [
         ['label' => 'Панель Управления', 'url' => ['/control-panel/index']],
-        ['label' => 'Пользователи', 'url' => ['/user/index']],
         ['label' => 'Логи', 'url' => ['/log/index']],
+        [
+            'label' => 'Настройки',
+            'items' => [
+                ['label' => 'Пользователи', 'url' => ['/user/index']],
+                ['label' => 'Компоненты', 'url' => ['/item/index']],
+            ],
+        ],
         [
             'label' => Yii::$app->user->identity->username,
             'items' => [
