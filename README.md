@@ -1,8 +1,8 @@
-Yii2 Template
+Smart Home control by Yii2 + Arduino + WebSockets (RatchetPHP)
 ============================
 
-This is my template for quick project development. Based on basic template
-but with environments and other features.
+This is my personal app for control my smart house. built on Yii2 Framework, used RatchetPHP for WebSockets and all
+it's tied with Arduino UNO with aREST library on it.
 
 
 DIRECTORY STRUCTURE
@@ -10,11 +10,13 @@ DIRECTORY STRUCTURE
 
       assets/             contains assets definition
       commands/           contains console commands (controllers)
+      components/         contains app components
       config/             contains application configurations
       controllers/        contains Web controller classes
       mail/               contains view files for e-mails
       models/             contains model classes
       runtime/            contains files generated during runtime
+      servers/            contains servers classes
       vendor/             contains dependent 3rd-party packages
       views/              contains view files for the Web application
       web/                contains the entry script and Web resources
@@ -33,8 +35,8 @@ INSTALLATION
 Get project files:
 
 ~~~
-git clone https://github.com/CyanoFresh/yii2-my-template.git PROJECTNAME
-cd PROJECTNAME
+git clone https://github.com/CyanoFresh/home.git
+cd home
 composer install
 php init
 ~~~
@@ -45,5 +47,4 @@ Then configure DB in config/db-local.php and run:
 php yii migrate
 ~~~
 
-**NOTES:**
-- Check and edit the other files in the `config/` directory to customize your application as required.
+Then configure WebSockets in `config/params.php`
