@@ -18,7 +18,7 @@ $this->title = 'Панель Управления';
         </div>
 
         <div class="loader-text">
-            <h1 class="loader-status">Загрузка...</h1>
+            <h1 class="loader-status">Загрузка</h1>
 
             <div class="loader-status-more">Ожидание загрузки страницы...</div>
         </div>

@@ -6,13 +6,14 @@ const $content = $('#content');
 const $loader = $('#loader');
 const $loaderStatus = $('.loader-status');
 const $loaderStatusMore = $('.loader-status-more');
-const $loaderSpinner = $('.loader-spinner');
 
 function log(msg) {
     console.log(msg);
 }
 
 function connect() {
+    $loaderStatusMore.html('Соединение с сервером...');
+
     WS = new WebSocket(WebSocketURL);
 
     WS.onopen = function () {
