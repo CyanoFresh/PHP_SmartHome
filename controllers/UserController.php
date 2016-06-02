@@ -6,6 +6,7 @@ use Yii;
 use app\models\User;
 use app\models\UserSearch;
 use yii\filters\AccessControl;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -23,10 +24,8 @@ class UserController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -75,11 +74,12 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new User([
+            'scenario' => 'create',
+        ]);
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()) and $model->validate()) {
             $model->setPassword($model->password);
-            $model->generateAuthKey();
             $model->save();
 
             return $this->redirect(['view', 'id' => $model->id]);
@@ -99,10 +99,13 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->scenario = 'update';
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->setPassword($model->password);
-            $model->generateAuthKey();
+        if ($model->load(Yii::$app->request->post()) and $model->validate()) {
+            if ($model->password) {
+                $model->setPassword($model->password);
+            }
+
             $model->save();
 
             return $this->redirect(['view', 'id' => $model->id]);

@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property integer $type
  * @property string $name
  * @property integer $pin
+ * @property integer $updateInterval
  * @property string $title
  * @property string $icon
  */
@@ -33,8 +34,8 @@ class Item extends ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'name', 'pin', 'title', 'icon'], 'required'],
-            [['type', 'pin'], 'integer'],
+            [['type', 'name', 'pin', 'title', 'icon', 'updateInterval'], 'required'],
+            [['type', 'pin', 'updateInterval'], 'integer'],
             [['name', 'title', 'icon'], 'string', 'max' => 255],
         ];
     }
@@ -46,23 +47,30 @@ class Item extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'type' => 'Type',
-            'name' => 'Name',
-            'pin' => 'Pin',
-            'title' => 'Title',
-            'icon' => 'Icon',
+            'type' => 'Тип',
+            'name' => 'Тех. название',
+            'pin' => 'Пин',
+            'updateInterval' => 'Интервал обновления',
+            'title' => 'Название',
+            'icon' => 'Иконка',
         ];
     }
 
-    public function getTypes()
+    /**
+     * @return array
+     */
+    public static function getTypesArray()
     {
         return [
             self::TYPE_RELAY => 'Реле',
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getTypeLabel()
     {
-        return $this->getTypes()[$this->type];
+        return self::getTypesArray()[$this->type];
     }
 }

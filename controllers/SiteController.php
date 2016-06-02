@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Log;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -56,6 +57,11 @@ class SiteController extends Controller
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            $model = new Log();
+            $model->type = Log::TYPE_LOGIN;
+            $model->user_id = Yii::$app->user->identity->id;
+            $model->save();
+
             return $this->goBack();
         }
 
@@ -66,7 +72,14 @@ class SiteController extends Controller
 
     public function actionLogout()
     {
+        $userID = Yii::$app->user->identity->id;
+
         Yii::$app->user->logout();
+
+        $model = new Log();
+        $model->type = Log::TYPE_LOGOUT;
+        $model->user_id = $userID;
+        $model->save();
 
         return $this->goHome();
     }

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -14,9 +15,16 @@ use yii\db\ActiveRecord;
  * @property integer $item_id
  * @property integer $date
  * @property integer $value
+ *
+ * @property User $user
+ * @property Item $item
  */
 class Log extends ActiveRecord
 {
+    const TYPE_STATE = 10;
+    const TYPE_LOGIN = 50;
+    const TYPE_LOGOUT = 60;
+
     /**
      * @inheritdoc
      */
@@ -31,8 +39,9 @@ class Log extends ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'user_id', 'item_id', 'date', 'value'], 'required'],
-            [['type', 'user_id', 'item_id', 'date', 'value'], 'integer'],
+            [['type', 'user_id'], 'required'],
+            [['type', 'user_id', 'item_id', 'value'], 'integer'],
+            [['date'], 'safe'],
         ];
     }
 
@@ -51,13 +60,53 @@ class Log extends ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'date',
+                'updatedAtAttribute' => false,
+            ],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getItem()
     {
         return $this->hasOne(Item::className(), ['id' => 'item_id']);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypesArray()
+    {
+        return [
+            self::TYPE_STATE => 'Переключение',
+            self::TYPE_LOGIN => 'Вошел',
+            self::TYPE_LOGOUT => 'Вышел',
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeLabel()
+    {
+        return self::getTypesArray()[$this->type];
     }
 }

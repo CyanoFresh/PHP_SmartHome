@@ -4,6 +4,7 @@
 /* @var $searchModel app\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+use app\models\User;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -20,6 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'summaryOptions' => ['class' => 'alert alert-info'],
+        'layout' => '{summary}<div class="table-responsive">{items}</div>{pager}',
         'columns' => [
             'id',
             'username',
@@ -27,9 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function ($model) {
-                    /** @var $model \app\models\User */
+                    /** @var $model User */
                     return $model->getStatusLabel();
                 },
+                'filter' => User::getStatusesArray(),
             ],
             'created_at:datetime',
             'updated_at:datetime',

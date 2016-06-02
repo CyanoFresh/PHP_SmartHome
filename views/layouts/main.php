@@ -6,7 +6,6 @@
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
-use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
@@ -39,10 +38,10 @@ AppAsset::register($this);
 
     $items = [
         ['label' => 'Панель Управления', 'url' => ['/control-panel/index']],
-        ['label' => 'Логи', 'url' => ['/log/index']],
         [
             'label' => 'Настройки',
             'items' => [
+                ['label' => 'Журнал', 'url' => ['/log/index']],
                 ['label' => 'Пользователи', 'url' => ['/user/index']],
                 ['label' => 'Компоненты', 'url' => ['/item/index']],
             ],

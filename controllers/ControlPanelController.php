@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -30,8 +31,17 @@ class ControlPanelController extends Controller
 
     public function actionIndex()
     {
+        $user = User::findIdentity(Yii::$app->user->identity->getId());
+
+        $params = [
+            'uid' => $user->getId(),
+            'auth_key' => $user->getAuthKey(),
+        ];
+
+        $webSocketURL = Yii::$app->params['WSServerUrl'] . '/?' . http_build_query($params);
+
         $this->view->registerJs('
-            var WebSocketURL = "' . Yii::$app->params['WSServerUrl'] . '";
+            var WebSocketURL = "' . $webSocketURL . '";
         ', View::POS_HEAD);
 
         return $this->render('index');

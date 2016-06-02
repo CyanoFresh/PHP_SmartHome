@@ -23,6 +23,9 @@ $config = [
             ],
         ],
         'db' => $db,
+        /*'session' => [
+            'class' => 'yii\web\DbSession',
+        ],*/
     ],
     'params' => $params,
     /*

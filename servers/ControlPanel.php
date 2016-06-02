@@ -2,7 +2,10 @@
 
 namespace app\servers;
 
+use app\helpers\StateHelper;
 use app\models\Item;
+use app\models\Log;
+use app\models\User;
 use linslin\yii2\curl\Curl;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
@@ -47,6 +50,7 @@ class ControlPanel implements MessageComponentInterface
         $this->clients = [];
 
         $this->curl = new Curl();
+        $this->curl->setOption(CURLOPT_TIMEOUT, 2);
 
         // Database driver hack
         Yii::$app->db->createCommand('SET SESSION wait_timeout = 31536000;')->execute();
@@ -60,6 +64,18 @@ class ControlPanel implements MessageComponentInterface
             foreach ($items as $item) {
                 $state = $this->getItemState($item);
                 echo 'Item ' . $item->name . ' [' . $item->id . '] is ' . $this->boolToState($state) . PHP_EOL;
+
+                if ($item->updateInterval > 0) {
+                    $this->loop->addPeriodicTimer($item->updateInterval, function () use (&$item) {
+                        if (count($this->clients) > 0) {
+                            $this->sendAll([
+                                'type' => 'itemState',
+                                'itemID' => $item->id,
+                                'state' => $this->getItemState($item),
+                            ]);
+                        }
+                    });
+                }
             }
         } else {
             echo 'No connection' . PHP_EOL;
@@ -71,12 +87,39 @@ class ControlPanel implements MessageComponentInterface
      */
     public function onOpen(ConnectionInterface $conn)
     {
+        // Auth
+        $uid = $conn->WebSocket->request->getQuery()->get('uid');
+        $auth_key = $conn->WebSocket->request->getQuery()->get('auth_key');
+
+        $user = User::findOne([
+            'id' => $uid,
+            'auth_key' => $auth_key,
+            'status' => User::STATUS_ACTIVE,
+        ]);
+
+        if (!$user) {
+            return $conn->send(Json::encode([
+                'type' => 'error',
+                'message' => 'Не удалось авторизоваться',
+            ]));
+        }
+
+        if (isset($this->clients[$user->id])) {
+            $this->clients[$user->id]->close();
+        }
+
+        // Handle user
+        $conn->User = $user;
+        $this->clients[$user->id] = $conn;
+
+        // Check Arduino Connection
         $connection = $this->checkConnection();
 
+        // Get items
         $items = [];
 
         if ($connection) {
-            /** @var Item[] $items */
+            /** @var Item[] $itemModels */
             $itemModels = Item::find()->all();
 
             foreach ($itemModels as $item) {
@@ -86,15 +129,16 @@ class ControlPanel implements MessageComponentInterface
             }
         }
 
-        $this->clients[$conn->resourceId] = $conn;
-
+        // Welcome
         $conn->send(Json::encode([
             'type' => 'welcome',
             'connection' => $connection,
             'items' => $items,
         ]));
 
+        // Logging
         echo 'Connected new user' . PHP_EOL;
+        return true;
     }
 
     /**
@@ -103,19 +147,23 @@ class ControlPanel implements MessageComponentInterface
     public function onMessage(ConnectionInterface $from, $msg)
     {
         $data = Json::decode($msg);
+        /** @var User $user */
+        $user = $from->User;
 
         switch ($data['type']) {
             case 'toggle':
                 $itemID = (int)$data['itemID'];
                 $item = Item::findOne($itemID);
 
-                $this->toggleItemState($item);
+                $newState = $this->toggleItemState($item);
 
                 $this->sendAll([
                     'type' => 'itemState',
                     'itemID' => $item->id,
-                    'state' => $this->getItemState($item),
+                    'state' => $newState,
                 ]);
+
+                $this->log($user, $item, $newState);
 
                 break;
         }
@@ -128,9 +176,15 @@ class ControlPanel implements MessageComponentInterface
      */
     public function onClose(ConnectionInterface $conn)
     {
-        if (isset($this->clients[$conn->resourceId])) {
-            unset($this->clients[$conn->resourceId]);
+        if (isset($conn->User)) {
+            unset($this->clients[$conn->User->id]);
+
+            // Regenerate auth key
+            $conn->User->generateAuthKey();
+            $conn->User->save();
         }
+
+        return true;
     }
 
     /**
@@ -141,6 +195,18 @@ class ControlPanel implements MessageComponentInterface
         echo $e->getMessage() . ': ' . $e->getFile() . ' : ' . $e->getLine() . PHP_EOL;
 
         $conn->close();
+    }
+
+    /**
+     * Send data to user by id
+     * @param integer $uid
+     * @param array $data Will be encoded to json
+     */
+    private function send($uid, $data)
+    {
+        $jsonData = Json::encode($data);
+
+        $this->clients[$uid]->send($jsonData);
     }
 
     /**
@@ -206,8 +272,9 @@ class ControlPanel implements MessageComponentInterface
 
     /**
      * Toggle item state
+     *
      * @param Item $item
-     * @return bool
+     * @return bool Current Item state
      */
     private function toggleItemState($item)
     {
@@ -233,5 +300,42 @@ class ControlPanel implements MessageComponentInterface
     private function boolToState($bool)
     {
         return $bool ? 'On' : 'Off';
+    }
+
+    /**
+     * Logs user action
+     *
+     * @param User $user
+     * @param Item $item
+     * @param boolean $newState
+     */
+    private function log($user, $item, $newState)
+    {
+        $model = new Log();
+
+        $model->type = Log::TYPE_STATE;
+        $model->user_id = $user->id;
+        $model->item_id = $item->id;
+        $model->value = StateHelper::boolToInt($newState);
+
+        if (!$model->save()) {
+            $this->o('Cannot save log from User [' . $user->username . ']');
+            VarDumper::dump($model->errors);
+        }
+    }
+
+    /**
+     * Output to console
+     *
+     * @param string $message
+     * @param boolean $eol
+     */
+    private function o($message, $eol = true)
+    {
+        echo $message;
+
+        if ($eol) {
+            echo PHP_EOL;
+        }
     }
 }

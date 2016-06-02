@@ -16,6 +16,9 @@ return [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
+        /*'session' => [
+            'class' => 'yii\web\DbSession',
+        ],*/
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -39,6 +42,9 @@ return [
             'rules' => [
                 '' => 'control-panel/index',
                 'login' => 'site/login',
+                '<controller>/<id:\d+>/<action:(create|update|delete)>' => '<controller>/<action>',
+                '<controller>/<id:\d+>' => '<controller>/view',
+                '<controller>s' => '<controller>/index',
             ],
         ],
         'view' => [
@@ -50,7 +56,7 @@ return [
         ],
         'formatter' => [
             'dateFormat' => 'dd.MM.yyyy',
-            'datetimeFormat' => 'php:d.m.Y H:i',
+            'datetimeFormat' => 'php:d.m.Y H:i:s',
         ],
         'assetManager' => [
             'bundles' => [

@@ -4,32 +4,67 @@
 /* @var $searchModel app\models\LogSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+use app\helpers\StateHelper;
+use app\models\Log;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-$this->title = 'Logs';
+
+$this->title = 'Логи';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="log-index">
 
-    <h1 class="page-header">
-        <?= Html::encode($this->title) ?>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
-    </h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <h1 class="page-header"><?= $this->title ?></h1>
 
-<?php Pjax::begin(); ?>    <?= GridView::widget([
+    <?php Pjax::begin(); ?>
+
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'summaryOptions' => ['class' => 'alert alert-info'],
+        'layout' => '{summary}<div class="table-responsive">{items}</div>{pager}',
         'columns' => [
             'id',
-            'type',
-            'user_id',
-            'item_id',
-            'date',
-            // 'value',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'attribute' => 'user_id',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    /** @var Log $model */
+                    return Html::a($model->user->username, ['user/view', 'id' => $model->user->id], [
+                        'target' => '_blank',
+                    ]);
+                },
+            ],
+            [
+                'attribute' => 'type',
+                'filter' => Log::getTypesArray(),
+                'value' => function ($model) {
+                    /** @var Log $model */
+                    return $model->getTypeLabel();
+                },
+            ],
+            [
+                'attribute' => 'value',
+                'filter' => StateHelper::getIntStatesArray(),
+                'value' => function ($model) {
+                    /** @var Log $model */
+                    return StateHelper::getIntStateLabel($model->value);
+                },
+            ],
+            [
+                'attribute' => 'item_id',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    /** @var Log $model */
+                    return $model->item ? Html::a($model->item->title, ['item/view', 'id' => $model->item->id], [
+                        'target' => '_blank',
+                    ]) : null;
+                },
+            ],
+            'date:datetime',
         ],
     ]); ?>
-<?php Pjax::end(); ?></div>
+
+    <?php Pjax::end(); ?>
+</div>

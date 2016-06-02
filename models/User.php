@@ -52,7 +52,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email'], 'required'],
+            [['username', 'email', 'status'], 'required'],
+            ['password', 'required', 'on' => 'create'],
+            ['password', 'safe', 'on' => 'update'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
@@ -74,7 +76,10 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function getStatuses()
+    /**
+     * @return array
+     */
+    public static function getStatusesArray()
     {
         return [
             self::STATUS_ACTIVE => 'Активен',
@@ -82,9 +87,12 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getStatusLabel()
     {
-        return $this->getStatuses()[$this->status];
+        return self::getStatusesArray()[$this->status];
     }
 
     /**

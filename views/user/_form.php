@@ -10,18 +10,22 @@ use yii\widgets\ActiveForm;
 
 <div class="user-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'autocomplete' => 'off',
+        ],
+    ]); ?>
 
     <?= $form->field($model, 'username')->textInput() ?>
-    
+
+    <?= $form->field($model, 'password')->passwordInput()->hint($model->isNewRecord ? false : 'Если пусто - не изменится') ?>
+
     <?= $form->field($model, 'email')->input('email') ?>
-    
-    <?= $form->field($model, 'password')->passwordInput() ?>
-    
-    <?= $form->field($model, 'status')->dropDownList($model->getStatuses()) ?>
+
+    <?= $form->field($model, 'status')->dropDownList($model->getStatusesArray()) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Изменить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Сохранить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
