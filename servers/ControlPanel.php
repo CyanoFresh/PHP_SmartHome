@@ -31,6 +31,11 @@ class ControlPanel implements MessageComponentInterface
     protected $clients;
 
     /**
+     * @var array
+     */
+    protected $itemTimers;
+
+    /**
      * @var array Server configuration
      */
     protected $config;
@@ -56,29 +61,32 @@ class ControlPanel implements MessageComponentInterface
         Yii::$app->db->createCommand('SET SESSION wait_timeout = 31536000;')->execute();
 
         if ($this->checkConnection()) {
-            echo 'Connection is active' . PHP_EOL;
+            $this->o('Connection is active');
 
             /** @var Item[] $items */
             $items = Item::find()->all();
 
             foreach ($items as $item) {
                 $state = $this->getItemState($item);
-                echo 'Item ' . $item->name . ' [' . $item->id . '] is ' . $this->boolToState($state) . PHP_EOL;
 
+                $this->o("Item {$item->name} [{$item->id}] is {$this->boolToState($state)}");
+
+                // Set timer for state updating
                 if ($item->updateInterval > 0) {
-                    $this->loop->addPeriodicTimer($item->updateInterval, function () use (&$item) {
-                        if (count($this->clients) > 0) {
-                            $this->sendAll([
-                                'type' => 'itemState',
-                                'itemID' => $item->id,
-                                'state' => $this->getItemState($item),
-                            ]);
-                        }
-                    });
+                    $this->itemTimers[$item->id] = $this->loop->addPeriodicTimer($item->updateInterval,
+                        function () use (&$item) {
+                            if (count($this->clients) > 0 and $this->checkConnection()) {
+                                $this->sendAll([
+                                    'type' => 'itemState',
+                                    'itemID' => $item->id,
+                                    'state' => $this->getItemState($item),
+                                ]);
+                            }
+                        });
                 }
             }
         } else {
-            echo 'No connection' . PHP_EOL;
+            $this->o('No connection');
         }
     }
 
@@ -98,15 +106,23 @@ class ControlPanel implements MessageComponentInterface
         ]);
 
         if (!$user) {
-            return $conn->send(Json::encode([
+            $this->o("Authorization failed with User [$uid]");
+
+            $conn->send(Json::encode([
                 'type' => 'error',
                 'message' => 'Не удалось авторизоваться',
             ]));
+
+            return $conn->close();
         }
 
+        // Close duplicating connection
         if (isset($this->clients[$user->id])) {
             $this->clients[$user->id]->close();
         }
+
+        $user->generateAuthKey();
+        $user->save();
 
         // Handle user
         $conn->User = $user;
@@ -123,6 +139,26 @@ class ControlPanel implements MessageComponentInterface
             $itemModels = Item::find()->all();
 
             foreach ($itemModels as $item) {
+                // Set timer for state updating
+                if ($item->updateInterval > 0 and isset($this->itemTimers[$item->id])) {
+                    if (isset($this->itemTimers[$item->id])) {
+                        $this->itemTimers[$item->id]->cancel();
+                    }
+
+                    $this->itemTimers[$item->id] = $this->loop->addPeriodicTimer($item->updateInterval,
+                        function () use (&$item) {
+                            if (count($this->clients) > 0 and $this->checkConnection()) {
+                                $this->sendAll([
+                                    'type' => 'itemState',
+                                    'itemID' => $item->id,
+                                    'state' => $this->getItemState($item),
+                                ]);
+                            }
+                        });
+                } elseif (isset($this->itemTimers[$item->id])) {
+                    $this->itemTimers[$item->id]->cancel();
+                }
+
                 $items[] = ArrayHelper::merge($item->toArray(), [
                     'state' => $this->getItemState($item),
                 ]);
@@ -137,8 +173,7 @@ class ControlPanel implements MessageComponentInterface
         ]));
 
         // Logging
-        echo 'Connected new user' . PHP_EOL;
-        return true;
+        return $this->o("User [$uid] connected");
     }
 
     /**
@@ -179,12 +214,8 @@ class ControlPanel implements MessageComponentInterface
         if (isset($conn->User)) {
             unset($this->clients[$conn->User->id]);
 
-            // Regenerate auth key
-            $conn->User->generateAuthKey();
-            $conn->User->save();
+            $this->o("User [{$conn->User->id}] disconnected");
         }
-
-        return true;
     }
 
     /**
@@ -230,7 +261,11 @@ class ControlPanel implements MessageComponentInterface
      */
     private function get($url)
     {
-        $response = $this->curl->get($this->config['arestURL'] . '/' . $url);
+        try {
+            $response = $this->curl->get($this->config['arestURL'] . '/' . $url);
+        } catch (\Exception $e) {
+            return false;
+        }
 
         if ($response) {
             return Json::decode($response);
@@ -329,6 +364,7 @@ class ControlPanel implements MessageComponentInterface
      *
      * @param string $message
      * @param boolean $eol
+     * @return bool
      */
     private function o($message, $eol = true)
     {
@@ -337,5 +373,7 @@ class ControlPanel implements MessageComponentInterface
         if ($eol) {
             echo PHP_EOL;
         }
+
+        return true;
     }
 }

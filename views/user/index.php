@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1 class="page-header">
         <?= $this->title ?>
         <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить', '#', ['class' => 'btn btn-success']) ?>
     </h1>
 
     <?= GridView::widget([

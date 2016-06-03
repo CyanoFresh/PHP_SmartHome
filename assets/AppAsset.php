@@ -9,10 +9,12 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/bootstrap.min.css',
+        'css/bootstrap.css',
+        'css/ripples.css',
         'css/site.css',
     ];
     public $js = [
+        'js/ripples.js',
         'js/site.js',
     ];
     public $depends = [

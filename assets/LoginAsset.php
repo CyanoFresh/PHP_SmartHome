@@ -10,7 +10,7 @@ class LoginAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
-        'css/bootstrap.min.css',
+        'css/bootstrap.css',
         'css/login.css',
     ];
     public $js = [

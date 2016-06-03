@@ -50,7 +50,7 @@ class Item extends ActiveRecord
             'type' => 'Тип',
             'name' => 'Тех. название',
             'pin' => 'Пин',
-            'updateInterval' => 'Интервал обновления',
+            'updateInterval' => 'Интервал обновления (сек)',
             'title' => 'Название',
             'icon' => 'Иконка',
         ];

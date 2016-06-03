@@ -42,11 +42,9 @@ function connect() {
         $loaderStatus.html('Ошибка');
         $loaderStatusMore.html('Произошла ошибка');
 
-        if (connection_opened) {
-            $content.fadeOut(function () {
-                $loader.fadeIn();
-            });
-        }
+        $content.fadeOut(function () {
+            $loader.fadeIn();
+        });
     };
 
     WS.onmessage = onMessage;

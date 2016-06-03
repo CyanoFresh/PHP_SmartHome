@@ -24,7 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'layout' => '{summary}<div class="table-responsive">{items}</div>{pager}',
         'columns' => [
             'id',
-            'type',
+            [
+                'attribute' => 'type',
+                'value' => function ($model) {
+                    /** @var \app\models\Item $model */
+                    return $model->getTypeLabel();
+                }
+            ],
             'name',
             'pin',
             'title',
