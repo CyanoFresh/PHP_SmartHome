@@ -2,6 +2,11 @@ body {
     padding-top: 70px;
 }
 
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
 .navbar-header a.navbar-brand {
     color: #fff;
 }
@@ -9,6 +14,27 @@ body {
 .navbar-inverse .navbar-nav > li > a {
     color: #fff;
 }
+
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'FortAwesome';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: "\f004";
+}
+
+a.desc:after {
+    content: "\f005";
+}
+
+/* Buttons */
 
 .btn {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
@@ -19,11 +45,26 @@ body {
 
 .btn:active {
     background-image: none !important;
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12), 0 2px 4px -1px rgba(0, 0, 0, .2)
 }
+
+.btn-flat {
+    box-shadow: none;
+    color: inherit;
+}
+
+.btn-flat:active {
+    box-shadow: none;
+    color: inherit;
+}
+
+/* End buttons */
+
+/* History */
 
 .history-items {
     margin: 20px 0;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
 .history-item {
@@ -63,3 +104,5 @@ body {
         padding: 0 10px;
     }
 }
+
+/* End History */

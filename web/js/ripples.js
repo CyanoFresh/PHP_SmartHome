@@ -130,7 +130,7 @@
              */
             setTimeout(function () {
                 self.rippleEnd($ripple);
-            }, 500);
+            }, 400);
 
 
             /**

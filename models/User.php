@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use LetterAvatar\LetterAvatar;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use YoHang88\LetterAvatar\LetterAvatar;
 
 /**
  * User model
@@ -187,18 +187,15 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function generateAvatar()
     {
-        $letterAvatar = new LetterAvatar;
-
-        return $letterAvatar
-            ->generate($this->username, 100)
-            ->saveAsJpeg(Yii::getAlias('@webroot/uploads/avatars/' . $this->getId() . '.jpg'));
+        $avatar = new LetterAvatar($this->username, 'square');
+        $avatar->generate()->save(Yii::getAlias('@webroot/uploads/avatars/' . $this->id . '.jpg'));
     }
 
     public function getAvatarSrc()
     {
-        $filename = Yii::getAlias('@web/uploads/avatars/' . $this->getId() . '.jpg');
+        $filename = Yii::getAlias('@web/uploads/avatars/' . $this->id . '.jpg');
 
-        if (file_exists(Yii::getAlias('@webroot/uploads/avatars/' . $this->getId() . '.jpg'))) {
+        if (file_exists(Yii::getAlias('@webroot/uploads/avatars/' . $this->id . '.jpg'))) {
             return $filename;
         } else {
             $this->generateAvatar();

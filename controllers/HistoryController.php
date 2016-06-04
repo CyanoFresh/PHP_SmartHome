@@ -4,12 +4,9 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Log;
-use app\models\LogSearch;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * LogController implements the list for Log model.
@@ -34,10 +31,6 @@ class HistoryController extends Controller
         ];
     }
 
-    /**
-     * Lists all logs.
-     * @return mixed
-     */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
@@ -52,5 +45,12 @@ class HistoryController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionFlush()
+    {
+        Log::deleteAll();
+
+        return $this->redirect(['index']);
     }
 }

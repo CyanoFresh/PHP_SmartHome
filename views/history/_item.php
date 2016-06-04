@@ -4,16 +4,14 @@
 
 use app\helpers\StateHelper;
 use app\models\Log;
-use YoHang88\LetterAvatar\LetterAvatar;
 
-$avatar = new LetterAvatar('a d', 'square');
 ?>
 
 <div class="history-item">
-    <img src="<?= $avatar ?>" class="history-item-image">
+    <img src="<?= $model->user->getAvatarSrc() ?>" class="history-item-image">
 
     <div class="history-item-content">
-            <strong><?= $model->user->username ?></strong>
+        <strong><?= $model->user->username ?></strong>
 
         <?php if ($model->type === Log::TYPE_STATE): ?>
 
