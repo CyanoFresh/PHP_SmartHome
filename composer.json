@@ -10,7 +10,9 @@
     "react/event-loop": "dev-master as 0.4",
     "rmrevin/yii2-minify-view": "*",
     "bower-asset/handlebars": "^4.0",
-    "bower-asset/js-cookie": "*"
+    "bower-asset/js-cookie": "*",
+    "tequilarapido/letter-avatar": "^1.0",
+    "yohang88/letter-avatar": "^1.0"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",

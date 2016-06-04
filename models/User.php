@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use LetterAvatar\LetterAvatar;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -173,5 +174,35 @@ class User extends ActiveRecord implements IdentityInterface
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($insert or (isset($changedAttributes['username']) and $this->username != $changedAttributes['username'])) {
+            $this->generateAvatar();
+        }
+    }
+
+    public function generateAvatar()
+    {
+        $letterAvatar = new LetterAvatar;
+
+        return $letterAvatar
+            ->generate($this->username, 100)
+            ->saveAsJpeg(Yii::getAlias('@webroot/uploads/avatars/' . $this->getId() . '.jpg'));
+    }
+
+    public function getAvatarSrc()
+    {
+        $filename = Yii::getAlias('@web/uploads/avatars/' . $this->getId() . '.jpg');
+
+        if (file_exists(Yii::getAlias('@webroot/uploads/avatars/' . $this->getId() . '.jpg'))) {
+            return $filename;
+        } else {
+            $this->generateAvatar();
+            return $this->getAvatarSrc();
+        }
     }
 }

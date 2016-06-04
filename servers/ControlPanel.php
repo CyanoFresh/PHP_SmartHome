@@ -67,9 +67,7 @@ class ControlPanel implements MessageComponentInterface
             $items = Item::find()->all();
 
             foreach ($items as $item) {
-                $state = $this->getItemState($item);
-
-                $this->o("Item {$item->name} [{$item->id}] is {$this->boolToState($state)}");
+                $this->getItemState($item);
 
                 // Set timer for state updating
                 if ($item->updateInterval > 0) {
@@ -297,12 +295,18 @@ class ControlPanel implements MessageComponentInterface
     private function getItemState($itemModel)
     {
         $response = $this->get('digital/' . $itemModel->pin);
+        
+        $state = false;
 
         if ($response) {
-            return $response['return_value'] === 0;
+            if ($response['return_value'] === 0) {
+                $state = true;
+            }
         }
+        
+        $this->o("Item $itemModel->name [$itemModel->id] is {$this->boolToState($state)}");
 
-        return false;
+        return $state;
     }
 
     /**
@@ -316,13 +320,13 @@ class ControlPanel implements MessageComponentInterface
         $itemState = $this->getItemState($item);
 
         if ($itemState) {
-            echo 'Turning item [' . $item->id . '] Off' . PHP_EOL;
+            $this->o("Turning item [{$item->id}] Off");
             $this->get('digital/' . $item->pin . '/1/');
 
             return false;
         }
 
-        echo 'Turning item [' . $item->id . '] On' . PHP_EOL;
+        $this->o("Turning item [{$item->id}] On");
         $this->get('digital/' . $item->pin . '/0/');
 
         return true;

@@ -38,6 +38,7 @@ AppAsset::register($this);
 
     $items = [
         ['label' => 'Панель Управления', 'url' => ['/control-panel/index']],
+        ['label' => 'История', 'url' => ['/history/index']],
         [
             'label' => 'Настройки',
             'items' => [
