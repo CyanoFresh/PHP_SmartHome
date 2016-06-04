@@ -26,7 +26,9 @@ class m130524_201442_init extends Migration
         ], $tableOptions);
 
         // Register admin user
-        $user = new User();
+        $user = new User([
+            'scenario' => 'create',
+        ]);
         $user->username = 'admin';
         $user->email = 'admin@domain.com';
         $user->setPassword('admin');

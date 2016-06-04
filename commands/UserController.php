@@ -11,7 +11,9 @@ class UserController extends Controller
 {
     public function actionRegister($username, $password, $email)
     {
-        $user = new User();
+        $user = new User([
+            'scenario' => 'create',
+        ]);
         $user->username = $username;
         $user->email = $email;
         $user->generateAuthKey();
