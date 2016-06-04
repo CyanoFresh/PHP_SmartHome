@@ -34,6 +34,7 @@ return [
         'setWritable' => [
             'runtime',
             'web/assets',
+            'web/uploads',
         ],
         'skipFiles'  => [
             'config/db-local.php'
@@ -50,6 +51,7 @@ return [
         'setWritable' => [
             'runtime',
             'web/assets',
+            'web/uploads',
         ],
         'skipFiles'  => [
             'config/db-local.php'
