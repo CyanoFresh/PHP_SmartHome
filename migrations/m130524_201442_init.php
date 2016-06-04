@@ -49,8 +49,8 @@ class m130524_201442_init extends Migration
             'id' => $this->primaryKey(),
             'type' => $this->smallInteger()->notNull(),
             'user_id' => $this->integer()->notNull(),
-            'item_id' => $this->integer()->notNull(),
-            'value' => $this->smallInteger()->notNull(),
+            'item_id' => $this->integer(),
+            'value' => $this->smallInteger(),
             'date' => $this->integer()->notNull(),
         ], $tableOptions);
     }
