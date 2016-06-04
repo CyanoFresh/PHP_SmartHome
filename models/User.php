@@ -26,6 +26,7 @@ use YoHang88\LetterAvatar\LetterAvatar;
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
+    const STATUS_BANNED = 5;
     const STATUS_ACTIVE = 10;
 
     public $password;
@@ -85,6 +86,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             self::STATUS_ACTIVE => 'Активен',
+            self::STATUS_BANNED => 'Забанен',
             self::STATUS_DELETED => 'Удален',
         ];
     }
@@ -102,7 +104,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id, 'status' => [self::STATUS_ACTIVE, self::STATUS_BANNED]]);
     }
 
     /**
@@ -121,7 +123,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'status' => [self::STATUS_ACTIVE, self::STATUS_BANNED]]);
     }
 
     /**

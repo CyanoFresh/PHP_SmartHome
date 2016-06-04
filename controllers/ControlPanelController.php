@@ -33,6 +33,10 @@ class ControlPanelController extends Controller
     {
         $user = User::findIdentity(Yii::$app->user->identity->getId());
 
+        if ($user->status === User::STATUS_BANNED) {
+            return $this->render('banned');
+        }
+
         $params = [
             'uid' => $user->getId(),
             'login_key' => $user->getLoginKey(),

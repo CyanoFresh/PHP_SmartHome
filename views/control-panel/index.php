@@ -25,7 +25,7 @@ $this->title = 'Панель Управления';
     </div>
 
     <div id="content">
-        <h1 class="page-header">Панель Управления</h1>
+        <h1 class="page-header hidden-xs">Панель Управления</h1>
 
         <div id="no-connection" class="alert alert-danger">
             Отсутствует подключение к Arduino
