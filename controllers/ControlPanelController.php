@@ -35,7 +35,7 @@ class ControlPanelController extends Controller
 
         $params = [
             'uid' => $user->getId(),
-            'auth_key' => $user->getAuthKey(),
+            'login_key' => $user->getLoginKey(),
         ];
 
         $webSocketURL = Yii::$app->params['WSServerUrl'] . '/?' . http_build_query($params);

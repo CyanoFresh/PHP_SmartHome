@@ -95,11 +95,11 @@ class ControlPanel implements MessageComponentInterface
     {
         // Auth
         $uid = $conn->WebSocket->request->getQuery()->get('uid');
-        $auth_key = $conn->WebSocket->request->getQuery()->get('auth_key');
+        $login_key = $conn->WebSocket->request->getQuery()->get('login_key');
 
         $user = User::findOne([
             'id' => $uid,
-            'auth_key' => $auth_key,
+            'login_key' => $login_key,
             'status' => User::STATUS_ACTIVE,
         ]);
 
@@ -119,7 +119,7 @@ class ControlPanel implements MessageComponentInterface
             $this->clients[$user->id]->close();
         }
 
-        $user->generateAuthKey();
+        $user->generateLoginKey();
         $user->save();
 
         // Handle user

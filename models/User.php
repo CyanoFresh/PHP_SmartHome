@@ -17,6 +17,7 @@ use YoHang88\LetterAvatar\LetterAvatar;
  * @property string $password_hash
  * @property string $email
  * @property string $auth_key
+ * @property string $login_key For WS Server authentication
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -148,6 +149,22 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getLoginKey()
+    {
+        return $this->login_key;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateLoginKey($loginKey)
+    {
+        return $this->getLoginKey() === $loginKey;
+    }
+
+    /**
      * Validates password
      *
      * @param string $password password to validate
@@ -176,21 +193,40 @@ class User extends ActiveRecord implements IdentityInterface
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
+    /**
+     * Generates "remember me" authentication key
+     */
+    public function generateLoginKey()
+    {
+        $this->login_key = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function afterSave($insert, $changedAttributes)
     {
-        parent::afterSave($insert, $changedAttributes);
-
         if ($insert or (isset($changedAttributes['username']) and $this->username != $changedAttributes['username'])) {
             $this->generateAvatar();
         }
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
+    /**
+     * Generate avatar for user
+     */
     public function generateAvatar()
     {
         $avatar = new LetterAvatar($this->username, 'square');
         $avatar->generate()->save(Yii::getAlias('@webroot/uploads/avatars/' . $this->id . '.jpg'));
     }
 
+    /**
+     * Get user avatar src or generate new one (for <img> tag)
+     *
+     * @return string
+     */
     public function getAvatarSrc()
     {
         $filename = Yii::getAlias('@web/uploads/avatars/' . $this->id . '.jpg');
