@@ -19,7 +19,7 @@ function connect() {
     WS.onopen = function () {
         connection_opened = true;
 
-        $loader.fadeOut(function () {
+        $loader.finish().fadeOut(function () {
             $content.fadeIn();
         });
     };
@@ -29,7 +29,7 @@ function connect() {
             $loaderStatus.html('Ошибка');
             $loaderStatusMore.html('Соединение с сервером потеряно');
 
-            $content.fadeOut(function () {
+            $content.finish().fadeOut(function () {
                 $loader.fadeIn();
             });
         } else {
@@ -42,7 +42,7 @@ function connect() {
         $loaderStatus.html('Ошибка');
         $loaderStatusMore.html('Произошла ошибка');
 
-        $content.fadeOut(function () {
+        $content.finish().fadeOut(function () {
             $loader.fadeIn();
         });
     };
