@@ -43,6 +43,9 @@ return [
                 '' => 'control-panel/index',
                 'login' => 'site/login',
                 'history' => 'history/index',
+                '<controller>/<id:\d+>/<action:(create|update|delete)>' => '<controller>/<action>',
+                '<controller>/<id:\d+>' => '<controller>/view',
+                '<controller>s' => '<controller>/index',
             ],
         ],
         'view' => [

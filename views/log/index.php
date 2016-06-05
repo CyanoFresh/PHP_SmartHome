@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => StateHelper::getIntStatesArray(),
                 'value' => function ($model) {
                     /** @var Log $model */
-                    return StateHelper::getIntStateLabel($model->value);
+                    return $model->value ? StateHelper::getIntStateLabel($model->value) : null;
                 },
             ],
             [
