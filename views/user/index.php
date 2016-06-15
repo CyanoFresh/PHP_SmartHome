@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             'id',
             'username',
-            'email:email',
+            'email',
             [
                 'attribute' => 'status',
                 'value' => function ($model) {

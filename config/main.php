@@ -16,9 +16,6 @@ return [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
-        /*'session' => [
-            'class' => 'yii\web\DbSession',
-        ],*/
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],

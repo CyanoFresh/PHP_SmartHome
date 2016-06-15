@@ -4,8 +4,6 @@ namespace app\commands;
 
 use app\models\User;
 use yii\console\Controller;
-use yii\helpers\VarDumper;
-use yii\web\NotFoundHttpException;
 
 class UserController extends Controller
 {
@@ -26,7 +24,8 @@ class UserController extends Controller
 
         echo 'Errors:' . PHP_EOL;
         var_dump($user->errors);
-        return 1;
+
+        return 0;
     }
 
     public function actionChangePassword($id, $newPassword)
@@ -34,7 +33,8 @@ class UserController extends Controller
         $user = User::findOne($id);
 
         if (!$user) {
-            echo 'User was not found';
+            echo 'User was not found' . PHP_EOL;
+            return 0;
         }
 
         $user->setPassword($newPassword);
@@ -42,7 +42,7 @@ class UserController extends Controller
 
         if ($user->save()) {
             echo 'Password successfully changed' . PHP_EOL;
-            
+
             return 1;
         }
 
@@ -57,7 +57,8 @@ class UserController extends Controller
         $user = User::findOne($id);
 
         if (!$user) {
-            throw new NotFoundHttpException();
+            echo 'User was not found' . PHP_EOL;
+            return 0;
         }
 
         if ($user->validatePassword($password)) {

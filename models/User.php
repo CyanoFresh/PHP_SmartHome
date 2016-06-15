@@ -21,6 +21,7 @@ use YoHang88\LetterAvatar\LetterAvatar;
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
+ * 
  * @property string $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface
@@ -55,7 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'status'], 'required'],
+            [['username', 'email'], 'required'],
             ['password', 'required', 'on' => 'create'],
             ['password', 'safe', 'on' => 'update'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
