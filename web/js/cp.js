@@ -42,6 +42,7 @@ function connect() {
         $loaderStatus.html('Ошибка');
         $loaderStatusMore.html('Произошла ошибка');
 
+        $loader.finish();
         $content.finish().fadeOut(function () {
             $loader.fadeIn();
         });
