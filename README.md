@@ -4,6 +4,8 @@ Smart Home control by Yii2 + Arduino + WebSockets (RatchetPHP)
 This is my personal app for control my smart house. built on Yii2 Framework, used RatchetPHP for WebSockets and all
 it's tied with Arduino UNO with aREST library on it.
 
+# Attention!!! This project is abandoned! Use https://github.com/CyanoFresh/SmartHome
+
 
 DIRECTORY STRUCTURE
 -------------------
